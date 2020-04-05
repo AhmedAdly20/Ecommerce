@@ -113,7 +113,7 @@
                             <div class="checkout-item-details">
                                 <div class="checkout-table-item">{{ $item->model->name }}</div>
                                 <div class="checkout-table-description">{{ $item->model->details }}</div>
-                                <div class="checkout-table-price">${{ $item->model->price }}</div>
+                                <div class="checkout-table-price">${{ $item->model->price/100 }}</div>
                             </div>
                         </div> <!-- end checkout-table -->
 
@@ -123,27 +123,52 @@
                     </div> <!-- end checkout-table-row -->
                     @endforeach
 
-
-
                 </div> <!-- end checkout-table -->
 
                 <div class="checkout-totals">
                     <div class="checkout-totals-left">
                         Subtotal <br>
-                        {{-- Discount (10OFF - 10%) <br> --}}
-                        Tax <br>
+                        @if (session()->has('coupon'))
+                            Discount ({{ session()->get('coupon')['name'] }}) :
+                            <form action="{{ route('coupon.destroy') }}" method="POST" style="display:inline">
+                                {{ csrf_field() }}
+                                {{ method_field('delete') }}
+                                <button type="submit" style="font-size:14px">Remove</button>
+                            </form>
+                            <br>
+                            <hr>
+                            New Subtotal <br>
+                        @endif
+                        Tax (13%)<br>
                         <span class="checkout-totals-total">Total</span>
 
                     </div>
 
                     <div class="checkout-totals-right">
-                        {{ Cart::subtotal() }} <br>
-                        {{-- -$750.00 <br> --}}
-                        {{ Cart::tax() }} <br>
-                        <span class="checkout-totals-total">{{ Cart::total() }}</span>
+                        ${{ Cart::subtotal() / 100 }} <br>
+                        @if (session()->has('coupon'))
+                            -${{ $discount / 100 }} <br>
+                            <hr>
+                            ${{ $newSubtotal / 100 }} <br>
+                        @endif
+                        ${{ $newTax / 100 }} <br>
+                        <span class="checkout-totals-total">${{ $newTotal / 100 }}</span>
 
                     </div>
                 </div> <!-- end checkout-totals -->
+
+                @if (! session()->has('coupon'))
+
+                <a href="#" class="have-code">Have a Code?</a>
+
+                <div class="have-code-container">
+                    <form action="{{ route('coupon.store') }}" method="POST">
+                        {{ csrf_field() }}
+                        <input type="text" name="coupon_code" id="coupon_code">
+                        <button type="submit" class="button button-plain">Apply</button>
+                    </form>
+                </div> <!-- end have-code-container -->
+                @endif
 
             </div>
 
@@ -220,15 +245,15 @@
               });
             });
             function stripeTokenHandler(token) {
-              // Insert the token ID into the form so it gets submitted to the server
-              var form = document.getElementById('payment-form');
-              var hiddenInput = document.createElement('input');
-              hiddenInput.setAttribute('type', 'hidden');
-              hiddenInput.setAttribute('name', 'stripeToken');
-              hiddenInput.setAttribute('value', token.id);
-              form.appendChild(hiddenInput);
-              // Submit the form
-              form.submit();
+                // Insert the token ID into the form so it gets submitted to the server
+                var form = document.getElementById('payment-form');
+                var hiddenInput = document.createElement('input');
+                hiddenInput.setAttribute('type', 'hidden');
+                hiddenInput.setAttribute('name', 'stripeToken');
+                hiddenInput.setAttribute('value', token.id);
+                form.appendChild(hiddenInput);
+                // Submit the form
+                form.submit();
             }
         })();
     </script>

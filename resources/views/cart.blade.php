@@ -35,16 +35,16 @@
             @endif
 
             @if (Cart::count() > 0)
-                
+
             <h2>{{ Cart::count() }} item(s) in Shopping Cart</h2>
 
             <div class="cart-table">
-                @foreach (Cart::content() as $item)                
+                @foreach (Cart::content() as $item)
                 <div class="cart-table-row">
                     <div class="cart-table-row-left">
-                        <a href="{{ route('shop.show',$item->model->slug) }}"><img src="{{ asset('img/products/'.$item->model->slug.'.jpg') }}" alt="item" class="cart-table-img"></a>
+                        <a href="{{ route('shop.show', $item->model->slug) }}"><img src="{{ asset('img/products/'.$item->model->slug.'.jpg') }}" alt="item" class="cart-table-img"></a>
                         <div class="cart-item-details">
-                            <div class="cart-table-item"><a href="{{ route('shop.show',$item->model->slug) }}">{{ $item->model->name }}</a></div>
+                            <div class="cart-table-item"><a href="{{ route('shop.show', $item->model->slug) }}">{{ $item->model->name }}</a></div>
                             <div class="cart-table-description">{{ $item->model->details }}</div>
                         </div>
                     </div>
@@ -53,10 +53,13 @@
                             <form action="{{ route('cart.destroy', $item->rowId) }}" method="POST">
                                 {{ csrf_field() }}
                                 {{ method_field('DELETE') }}
+
                                 <button type="submit" class="cart-options">Remove</button>
                             </form>
-                            <form action="{{ route('cart.switchToSaveForLater',$item->rowId) }}" method="post">
+
+                            <form action="{{ route('cart.switchToSaveForLater', $item->rowId) }}" method="POST">
                                 {{ csrf_field() }}
+
                                 <button type="submit" class="cart-options">Save for Later</button>
                             </form>
                         </div>
@@ -67,21 +70,12 @@
                                 @endfor
                             </select>
                         </div>
-                        <div>${{ $item->subtotal }}</div>
+                        <div>{{ $item->subtotal }}</div>
                     </div>
                 </div> <!-- end cart-table-row -->
                 @endforeach
 
             </div> <!-- end cart-table -->
-
-            <a href="#" class="have-code">Have a Code?</a>
-
-            <div class="have-code-container">
-                <form action="#">
-                    <input type="text">
-                    <button type="submit" class="button button-plain">Apply</button>
-                </form>
-            </div> <!-- end have-code-container -->
 
             <div class="cart-totals">
                 <div class="cart-totals-left">
@@ -91,13 +85,13 @@
                 <div class="cart-totals-right">
                     <div>
                         Subtotal <br>
-                        Tax 10%<br>
-                        <span class="cart-totals-total">Total</span>
+                        {{ config('cart.tax') }}% Tax
+                        <span class="cart-totals-total">Total:</span>
                     </div>
                     <div class="cart-totals-subtotal">
-                        {{ Cart::subtotal() }} <br>
-                        {{ Cart::tax() }} <br>
-                        <span class="cart-totals-total">{{ Cart::total() }}</span>
+                        ${{ Cart::subtotal() / 100 }} <br>
+                        ${{ Cart::tax() / 100 }} <br>
+                        <span class="cart-totals-total">${{ Cart::total() / 100 }}</span>
                     </div>
                 </div>
             </div> <!-- end cart-totals -->
@@ -106,12 +100,16 @@
                 <a href="{{ route('shop.index') }}" class="button">Continue Shopping</a>
                 <a href="{{ route('checkout.index') }}" class="button-primary">Proceed to Checkout</a>
             </div>
+
             @else
-                <h3>No Item In Cart</h3>
+
+                <h3>No items in Cart!</h3>
                 <div class="spacer"></div>
                 <a href="{{ route('shop.index') }}" class="button">Continue Shopping</a>
                 <div class="spacer"></div>
+
             @endif
+
             @if (Cart::instance('saveForLater')->count() > 0)
 
             <h2>{{ Cart::instance('saveForLater')->count() }} item(s) Saved For Later</h2>
@@ -131,15 +129,18 @@
                             <form action="{{ route('saveForLater.destroy', $item->rowId) }}" method="POST">
                                 {{ csrf_field() }}
                                 {{ method_field('DELETE') }}
+
                                 <button type="submit" class="cart-options">Remove</button>
                             </form>
 
                             <form action="{{ route('saveForLater.switchToCart', $item->rowId) }}" method="POST">
                                 {{ csrf_field() }}
+
                                 <button type="submit" class="cart-options">Move to Cart</button>
                             </form>
                         </div>
-                        <div>${{ $item->model->price }}</div>
+
+                        <div>{{ $item->model->price }}</div>
                     </div>
                 </div> <!-- end cart-table-row -->
                 @endforeach
@@ -182,7 +183,6 @@
                     });
                 })
             })
-            axios.alert('hi');
         })();
     </script>
 @endsection
