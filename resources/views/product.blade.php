@@ -21,15 +21,20 @@
     <div class="product-section container">
         <div>
             <div class="product-section-image">
-                <img src="{{ productImage($product->image) }}" alt="">
+                <img src="{{ productImage($product->image) }}" alt="product" class="active" id="currentImage">
             </div>
-            @if ($product->images)
-                <div>
+            <div class="product-section-images">
+                @if ($product->images)
+                    <div class="product-section-thumbnail selected">
+                        <img src="{{ productImage($product->image) }}" alt="">
+                    </div>
                     @foreach (json_decode($product->images,true) as $image)
-                        <img src="{{ productImage($image) }}" alt="">
+                        <div class="product-section-thumbnail">
+                            <img src="{{ productImage($image) }}" alt="">
+                        </div>
                     @endforeach
-                </div>
-            @endif
+                @endif
+            </div>
         </div>
         <div class="product-section-information">
             <h1 class="product-section-title">{{ $product->name }}</h1>
@@ -55,4 +60,28 @@
     @include('partials.might-like')
 
 
+@endsection
+
+@section('extra-js')
+    <script>
+        (function(){
+            const currentImage = document.querySelector('#currentImage');
+            const images = document.querySelectorAll('.product-section-thumbnail');
+
+            images.forEach((element) => element.addEventListener('click',thumbnailClick ))
+
+            function thumbnailClick(e){
+                currentImage.classList.remove('active');
+
+                currentImage.addEventListener('transitionend',() => {
+                    currentImage.src = this.querySelector('img').src;
+                    currentImage.classList.add('active');
+                });
+
+
+                images.forEach((element) => element.classList.remove('selected'))
+                this.classList.add('selected');
+            }
+        })();
+    </script>
 @endsection
