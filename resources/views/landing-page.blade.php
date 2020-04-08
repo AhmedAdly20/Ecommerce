@@ -19,8 +19,13 @@
     <body>
         <header class="with-background">
             <div class="top-nav container">
-                <div class="logo">Laravel Ecommerce</div>
-                {{ menu('main', 'partials.menus.main') }}
+                <div class="top-nav-left">
+                    <div class="logo">Ecommerce</div>
+                    {{ menu('main', 'partials.menus.main') }}
+                </div>
+                <div class="top-nav-left">
+                    @include('partials.menus.main-right')
+                </div>
             </div> <!-- end top-nav -->
             <div class="hero container">
                 <div class="hero-copy">
@@ -67,7 +72,6 @@
                             <div class="product-price">${{ $product->price /100 }}</div>
                         </div>
                     @endforeach
-
                 </div> <!-- end products -->
 
                 <div class="text-center button-container">

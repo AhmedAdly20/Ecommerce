@@ -4,27 +4,26 @@
     grid-gap: 120px;
     padding: 100px 0 120px;
 
-    .selected{
+    .selected {
         border: 1px solid #979797;
     }
 }
 
-.product-section-images{
+.product-section-images {
     display: grid;
-    grid-template-columns: repeat(6,1fr);
+    grid-template-columns: repeat(6, 1fr);
     grid-gap: 20px;
     margin-top: 20px;
-
 }
 
-.product-section-thumbnail{
+.product-section-thumbnail {
     display: flex;
     align-items: center;
     border: 1px solid lightgray;
     min-height: 66px;
     cursor: pointer;
 
-    &:hover{
+    &:hover {
         border: 1px solid #979797;
     }
 }
@@ -38,12 +37,13 @@
     text-align: center;
     height: 400px;
 
-    img{
+    img {
         opacity: 0;
         transition: opacity .10s ease-in-out;
+        max-height: 100%;
     }
 
-    img.active{
+    img.active {
         opacity: 1;
     }
 }
