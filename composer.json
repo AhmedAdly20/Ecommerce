@@ -11,6 +11,7 @@
         "php": ">=7.0.0",
         "cartalyst/stripe-laravel": "^7.0",
         "fideloper/proxy": "~3.3",
+        "guzzlehttp/guzzle": "^6.5",
         "hardevine/shoppingcart": "^2.7",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
