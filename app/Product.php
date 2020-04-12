@@ -35,4 +35,15 @@ class Product extends Model
     {
         return $this->belongsToMany('App\Category');
     }
+
+    public function toSearchableArray()
+    {
+        $array = $this->toArray();
+
+        $extraFields = [
+            'categories' => $this->categories->pluck('name')->toArray(),
+        ];
+
+        return array_merge($array, $extraFields);
+    }
 }
