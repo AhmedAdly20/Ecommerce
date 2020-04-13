@@ -68,12 +68,23 @@
                                 @endfor
                             </select>
                         </div>
-                        <div>{{ $item->subtotal }}</div>
+                        <div>{{ $item->subtotal /100 }}</div>
                     </div>
                 </div> <!-- end cart-table-row -->
                 @endforeach
 
             </div> <!-- end cart-table -->
+
+            @if (! session()->has('coupon'))
+                    <a href="#" class="have-code">Have a Code?</a>
+                    <div class="have-code-container">
+                        <form action="{{ route('coupon.store') }}" method="POST">
+                            {{ csrf_field() }}
+                            <input type="text" name="coupon_code" id="coupon_code">
+                            <button type="submit" class="button button-plain">Apply</button>
+                        </form>
+                    </div> <!-- end have-code-container -->
+            @endif
 
             <div class="cart-totals">
                 <div class="cart-totals-left">
@@ -83,16 +94,59 @@
                 <div class="cart-totals-right">
                     <div>
                         Subtotal <br>
-                        {{ config('cart.tax') }}% Tax
+                        @if (session()->has('coupon'))
+                            Code ({{ session()->get('coupon')['name'] }})
+                            <form action="{{ route('coupon.destroy') }}" method="POST" style="display:inline">
+                                {{ csrf_field() }}
+                                {{ method_field('delete') }}
+                                <button type="submit" style="font-size:14px">Remove</button>
+                            </form>
+                            <br>
+                            <hr>
+                            New Subtotal
+                        @endif
+                        {{ config('cart.tax') }}% Tax <br>
                         <span class="cart-totals-total">Total:</span>
                     </div>
                     <div class="cart-totals-subtotal">
                         ${{ Cart::subtotal() / 100 }} <br>
-                        ${{ Cart::tax() / 100 }} <br>
-                        <span class="cart-totals-total">${{ Cart::total() / 100 }}</span>
+                        @if (session()->has('coupon'))
+                            -${{ $discount / 100 }} <br>
+                            <hr>
+                            ${{ $newSubtotal / 100 }} <br>
+                        @endif
+                        ${{ $newTax / 100 }} <br>
+                        <span class="cart-totals-total">${{ $newTotal / 100 }}</span>
                     </div>
                 </div>
             </div> <!-- end cart-totals -->
+
+            {{-- <div class="checkout-totals-left">
+                Subtotal <br>
+                @if (session()->has('coupon'))
+                    Discount ({{ session()->get('coupon')['name'] }}) :
+                    <form action="{{ route('coupon.destroy') }}" method="POST" style="display:inline">
+                        {{ csrf_field() }}
+                        {{ method_field('delete') }}
+                        <button type="submit" style="font-size:14px">Remove</button>
+                    </form>
+                    <br>
+                    <hr>
+                    New Subtotal <br>
+                @endif
+                Tax (13%)<br>
+                <span class="checkout-totals-total">Total</span>
+            </div>
+            <div class="checkout-totals-right">
+                ${{ Cart::subtotal() / 100 }} <br>
+                @if (session()->has('coupon'))
+                    -${{ $discount / 100 }} <br>
+                    <hr>
+                    ${{ $newSubtotal / 100 }} <br>
+                @endif
+                ${{ $newTax / 100 }} <br>
+                <span class="checkout-totals-total">${{ $newTotal / 100 }}</span>
+            </div> --}}
 
             <div class="cart-buttons">
                 <a href="{{ route('shop.index') }}" class="button">Continue Shopping</a>

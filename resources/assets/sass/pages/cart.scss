@@ -80,7 +80,7 @@
         .cart-totals-right {
             display: flex;
             justify-content: space-between;
-            width: 25%;
+            width: 40%;
             text-align: right;
         }
 
@@ -95,6 +95,38 @@
         display: flex;
         justify-content: space-between;
         margin-bottom: 40px;
+    }
+
+    .have-code {
+        display: block;
+        margin: 14px 0;
+    }
+    
+    .have-code-container {
+    border: 1px solid $text-color-light;
+    padding: 16px;
+
+    form {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    input[type="text"] {
+        width: 70%;
+        padding: 10px;
+        font-size: 16px;
+    }
+
+    input[type="submit"] {
+        background: white;
+        border: 1px solid $text-color-light;
+        padding-top: 8px;
+        padding-bottom: 8px;
+
+        &:hover {
+        background: $text-color;
+        }
+    }
     }
 }
 
