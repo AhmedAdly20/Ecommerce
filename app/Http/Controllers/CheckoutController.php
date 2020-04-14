@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Order;
 use App\OrderProduct;
 use App\Mail\OrderPlaced;
+use App\Product;
 
 class CheckoutController extends Controller
 {
@@ -46,6 +47,11 @@ class CheckoutController extends Controller
      */
     public function store(CheckoutRequest $request)
     {
+        // Check race condition when there are less items available to purchase
+        if ($this->productsAreNoLongerAvailable()) {
+            return back()->withErrors('Sorry! One of the items in your cart is no longer avialble.');
+        }
+
         $contents = Cart::content()->map(function ($item) {
             return $item->model->slug.', '.$item->qty;
         })->values()->toJson();
@@ -70,6 +76,9 @@ class CheckoutController extends Controller
             
             // sending mail to the order maker
             Mail::send(new OrderPlaced($order));
+
+            // decrease the quantities of all the products in the cart
+            $this->decreaseQuantities();
 
             // SUCCESSFUL
             Cart::instance('default')->destroy();
@@ -114,24 +123,23 @@ class CheckoutController extends Controller
         return $order;
     }
 
-    // private function getNumbers()
-    // {
-    //     $tax = config('cart.tax') / 100;
-    //     $discount = session()->get('coupon')['discount'] ?? 0;
-    //     $oldSubTotal = Cart::subtotal();
-    //     $newSubtotal = (int)$oldSubTotal - (int)$discount;
-    //     if($newSubtotal < 0){
-    //         $newSubtotal = 0;
-    //     }
-    //     $newTax = $newSubtotal * $tax;
-    //     $newTotal = $newSubtotal * (1 + $tax);
+    protected function decreaseQuantities()
+    {
+        foreach (Cart::content() as $item) {
+            $product = Product::find($item->model->id);
 
-    //     return collect([
-    //         'tax' => $tax,
-    //         'discount' => $discount,
-    //         'newSubtotal' => $newSubtotal,
-    //         'newTax' => $newTax,
-    //         'newTotal' => $newTotal,
-    //     ]);
-    // }
+            $product->update(['quantity' => $product->quantity - $item->qty]);
+        }
+    }
+
+    protected function productsAreNoLongerAvailable()
+    {
+        foreach (Cart::content() as $item) {
+            $product = Product::find($item->model->id);
+            if ($product->quantity < $item->qty) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

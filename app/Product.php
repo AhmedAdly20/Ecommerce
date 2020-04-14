@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     use Searchable;
+    
+    protected $fillable = ['quantity'];
     // use SearchableTrait;
     
     // protected $searchable = [
