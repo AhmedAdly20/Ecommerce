@@ -1,5 +1,7 @@
 <?php
 
+use Carbon\Carbon;
+
 function setActiveCategory($category, $output = 'active')
 {
     return request()->category == $category ? $output : '';
@@ -41,4 +43,9 @@ function getStockLevel($quantity)
     }
 
     return $stockLevel;
+}
+
+function presentDate($date)
+{
+    return Carbon::parse($date)->format('M d, Y');
 }
