@@ -18,7 +18,8 @@
         "laravel/scout": "^4.0",
         "laravel/tinker": "~1.0",
         "nicolaslopezj/searchable": "^1.9",
-        "tcg/voyager": "1.1.*"
+        "tcg/voyager": "1.1.*",
+        "braintree/braintree_php": "^3.36"
     },
     "require-dev": {
         "filp/whoops": "~2.0",

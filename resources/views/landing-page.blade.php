@@ -32,7 +32,7 @@
                     <h1>Laravel Ecommerce Demo</h1>
                     <p>Includes multiple products, categories, a shopping cart and a checkout system with Stripe integration.</p>
                     <div class="hero-buttons">
-                        <a href="#" class="button button-white">Blog Post</a>
+                        <a href="{{ route('blog.index') }}" class="button button-white">Blog Posts</a>
                         <a href="#" class="button button-white">GitHub</a>
                     </div>
                 </div> <!-- end hero-copy -->
@@ -89,21 +89,13 @@
                 <p class="section-description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolore vitae nisi, consequuntur illum dolores cumque pariatur quis provident deleniti nesciunt officia est reprehenderit sunt aliquid possimus temporibus enim eum hic.</p>
 
                 <div class="blog-posts">
-                    <div class="blog-post" id="blog1">
-                        <a href="#"><img src="/img/blog1.png" alt="Blog Image"></a>
-                        <a href="#"><h2 class="blog-title">Blog Post Title 1</h2></a>
-                        <div class="blog-description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quasi, tenetur numquam ipsam reiciendis.</div>
-                    </div>
-                    <div class="blog-post" id="blog2">
-                        <a href="#"><img src="/img/blog2.png" alt="Blog Image"></a>
-                        <a href="#"><h2 class="blog-title">Blog Post Title 2</h2></a>
-                        <div class="blog-description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quasi, tenetur numquam ipsam reiciendis.</div>
-                    </div>
-                    <div class="blog-post" id="blog3">
-                        <a href="#"><img src="/img/blog3.png" alt="Blog Image"></a>
-                        <a href="#"><h2 class="blog-title">Blog Post Title 3</h2></a>
-                        <div class="blog-description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quasi, tenetur numquam ipsam reiciendis.</div>
-                    </div>
+                    @foreach ($posts as $post)
+                        <div class="blog-post" id="blog{{ $loop->iteration }}">
+                            <a href="#"><img src="{{ asset('/storage/'.$post->image) }}" alt="Blog Image"></a>
+                            <a href="#"><h2 class="blog-title">{{ $post->title }}</h2></a>
+                            <div class="blog-description">{{ $post->excerpt }}</div>
+                        </div>
+                    @endforeach
                 </div>
             </div> <!-- end container -->
         </div> <!-- end blog-section -->
